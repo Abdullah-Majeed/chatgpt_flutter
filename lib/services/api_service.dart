@@ -56,9 +56,9 @@ class ApiService {
         ),
       );
 
-      // Map jsonResponse = jsonDecode(response.body);
+      Map jsonResponse = jsonDecode(response.body);
     
-      Map jsonResponse = json.decode(utf8.decode(response.bodyBytes));
+      // Map jsonResponse = json.decode(utf8.decode(response.bodyBytes));
       print("jsonRes $jsonResponse");
       if (jsonResponse['error'] != null) {
         // print("jsonResponse['error'] ${jsonResponse['error']["message"]}");

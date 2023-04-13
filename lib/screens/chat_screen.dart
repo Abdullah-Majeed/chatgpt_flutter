@@ -135,16 +135,26 @@ class _ChatScreenState extends State<ChatScreen> {
 
   Future<void> sendMessageFCT(
       ModelsProvider modelsProvider, ChatProvider chatListProvider) async {
+    if (textEditingController.text.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+        content: TextWidget(label: "Please type a message."),
+        backgroundColor: Colors.red,
+      ));
+      return;
+    }
     try {
+      String msg = textEditingController.text;
       print("text: ${textEditingController.text}");
       setState(() {
         isTyping = true;
-        chatListProvider.addUserMessage(msg: textEditingController.text);
+        chatListProvider.addUserMessage(msg: msg);
         // chatList.add(ChatModel(msg: textEditingController.text, chatIndex: 0));
         textEditingController.clear();
         focusNode.unfocus();
       });
-      await chatListProvider.sendMessageAndGetAnswers(chosenModelId: modelsProvider.getCurrentModel,msg: textEditingController.text);
+      await chatListProvider.sendMessageAndGetAnswers(
+          chosenModelId: modelsProvider.getCurrentModel,
+          msg: msg);
       // chatList.addAll(await ApiService.sendMessageGPT(
       //     message: textEditingController.text,
       //     modelId: modelsProvider.getCurrentModel));
@@ -152,6 +162,10 @@ class _ChatScreenState extends State<ChatScreen> {
       setState(() {});
     } catch (e) {
       log('$e');
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        content: TextWidget(label: e.toString()),
+        backgroundColor: Colors.red,
+      ));
     } finally {
       setState(() {
         isTyping = false;
