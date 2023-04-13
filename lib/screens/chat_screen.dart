@@ -135,6 +135,13 @@ class _ChatScreenState extends State<ChatScreen> {
 
   Future<void> sendMessageFCT(
       ModelsProvider modelsProvider, ChatProvider chatListProvider) async {
+    if (isTyping) {
+      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+        content: TextWidget(label: "You couldn't send multiple messages at a time, please wait."),
+        backgroundColor: Colors.red,
+      ));
+      return;
+    }
     if (textEditingController.text.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
         content: TextWidget(label: "Please type a message."),
@@ -153,8 +160,7 @@ class _ChatScreenState extends State<ChatScreen> {
         focusNode.unfocus();
       });
       await chatListProvider.sendMessageAndGetAnswers(
-          chosenModelId: modelsProvider.getCurrentModel,
-          msg: msg);
+          chosenModelId: modelsProvider.getCurrentModel, msg: msg);
       // chatList.addAll(await ApiService.sendMessageGPT(
       //     message: textEditingController.text,
       //     modelId: modelsProvider.getCurrentModel));
